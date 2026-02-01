@@ -1,0 +1,78 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+data/raw/
+data/processed/
+*.csv
+*.h5
+*.hdf5
+*.tflite
+*.onnx
+*.pb
+models/saved_models/*.h5
+models/saved_models/*.tflite
+models/saved_models/*.onnx
+
+# Logs and outputs
+*.log
+logs/
+outputs/
+*.png
+*.jpg
+*.jpeg
+!confusion_matrix.png
+!training_history.png
+
+# Training artifacts
+training_history.csv
+checkpoints/

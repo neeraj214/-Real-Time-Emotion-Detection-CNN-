@@ -1,0 +1,19 @@
+# Real-Time Facial Emotion Detection System
+
+tensorflow>=2.10.0,<2.16.0
+keras>=2.10.0
+opencv-python>=4.7.0
+opencv-contrib-python>=4.7.0
+numpy>=1.23.0,<2.0.0
+matplotlib>=3.6.0
+seaborn>=0.12.0
+scikit-learn>=1.2.0
+pandas>=1.5.0
+pillow>=9.3.0
+mediapipe>=0.9.0
+tqdm>=4.64.0
+h5py>=3.7.0
+
+# Optional: For model conversion
+# tf2onnx>=1.13.0
+# onnxruntime>=1.13.0
