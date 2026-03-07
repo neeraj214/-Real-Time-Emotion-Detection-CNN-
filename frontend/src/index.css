@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-slate-900 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white border border-slate-200/60 shadow-soft rounded-2xl;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-2.5 rounded-xl font-medium transition-all hover:bg-indigo-700 active:scale-95 shadow-sm;
+  }
+}
