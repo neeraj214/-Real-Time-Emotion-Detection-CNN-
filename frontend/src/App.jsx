@@ -2,24 +2,11 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, Smile, Shield, Activity } from 'lucide-react'
+import Navbar from './components/Navbar'
 
 const Home = () => (
   <div className="min-h-screen p-8 max-w-6xl mx-auto">
-    <header className="flex justify-between items-center mb-12">
-      <div className="flex items-center gap-2">
-        <div className="bg-primary p-2 rounded-lg text-white">
-          <Activity size={24} />
-        </div>
-        <h1 className="text-xl font-bold tracking-tight">SenseAI</h1>
-      </div>
-      <nav className="flex gap-6 text-sm font-medium text-slate-600">
-        <a href="#" className="hover:text-primary">Dashboard</a>
-        <a href="#" className="hover:text-primary">History</a>
-        <a href="#" className="hover:text-primary">Settings</a>
-      </nav>
-    </header>
-
-    <main className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <main className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mt-12">
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -93,6 +80,7 @@ const Home = () => (
 function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
