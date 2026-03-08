@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Camera, Brain, Cpu, ArrowRight, Shield, Zap, Smile } from 'lucide-react';
+import { Camera, Brain, Cpu, ArrowRight, Shield, Zap, Smile, Activity } from 'lucide-react';
+import FeatureCard from '../components/FeatureCard';
 
 const FloatingIcon = ({ icon: Icon, delay, className }) => (
   <motion.div
@@ -85,28 +86,50 @@ const Home = () => {
             </button>
           </motion.div>
         </motion.div>
-
-        {/* Stats/Features Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-24 grid grid-cols-1 sm:grid-cols-3 gap-8"
-        >
-          {[
-            { title: "Low Latency", icon: Zap, color: "text-amber-500" },
-            { title: "High Accuracy", icon: Shield, color: "text-green-500" },
-            { title: "Privacy Secure", icon: Smile, color: "text-blue-500" }
-          ].map((item, i) => (
-            <div key={i} className="glass-card p-6 flex flex-col items-center gap-3">
-              <div className={`${item.color} p-3 rounded-xl bg-slate-50`}>
-                <item.icon size={24} />
-              </div>
-              <span className="font-bold text-slate-800">{item.title}</span>
-            </div>
-          ))}
-        </motion.div>
       </main>
+
+      {/* Feature Section */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 py-24 w-full">
+        <div className="text-center mb-16">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl md:text-4xl font-bold text-slate-900 mb-4"
+          >
+            Powerful Features for Modern AI
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-slate-600 max-w-2xl mx-auto"
+          >
+            Our emotion detection system is built with cutting-edge technology to provide fast, accurate, and private results.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FeatureCard 
+            icon={Zap}
+            title="Real-Time Detection"
+            description="Process video streams instantly with sub-millisecond latency for live emotion tracking."
+            accentColor="bg-amber-500"
+          />
+          <FeatureCard 
+            icon={Brain}
+            title="AI-Powered CNN Model"
+            description="Leveraging deep convolutional neural networks trained on thousands of facial expressions."
+            accentColor="bg-indigo-600"
+          />
+          <FeatureCard 
+            icon={Activity}
+            title="Optimized Performance"
+            description="Smooth high-FPS detection optimized for both desktop and mobile processor architectures."
+            accentColor="bg-blue-500"
+          />
+        </div>
+      </section>
     </div>
   );
 };
