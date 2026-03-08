@@ -18,4 +18,8 @@
   .btn-primary {
     @apply bg-primary text-white px-6 py-2.5 rounded-xl font-medium transition-all hover:bg-indigo-700 active:scale-95 shadow-sm;
   }
+
+  .mirror {
+    transform: scaleX(-1);
+  }
 }
