@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Video, VideoOff, Activity, Smile, BarChart3, ShieldCheck } from 'lucide-react';
+import { Activity, Smile, BarChart3 } from 'lucide-react';
+import WebcamViewer from '../components/WebcamViewer';
 
 const Detection = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -40,91 +41,8 @@ const Detection = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Left: Webcam Preview Card */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="glass-card overflow-hidden flex flex-col"
-          >
-            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
-              <div className="flex items-center gap-2 font-semibold text-slate-700">
-                <Video size={18} className="text-primary" />
-                Live Feed
-              </div>
-              <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${isCameraActive ? 'bg-green-500 animate-pulse' : 'bg-slate-300'}`} />
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  {isCameraActive ? 'Active' : 'Offline'}
-                </span>
-              </div>
-            </div>
-
-            <div className="relative aspect-video bg-slate-900 flex items-center justify-center overflow-hidden">
-              <AnimatePresence mode="wait">
-                {!isCameraActive ? (
-                  <motion.div 
-                    key="placeholder"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-center text-slate-500"
-                  >
-                    <div className="bg-slate-800 p-6 rounded-full inline-block mb-4">
-                      <Camera size={48} className="text-slate-600" />
-                    </div>
-                    <p className="text-sm font-medium">Camera is currently disabled</p>
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    key="video"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 to-transparent flex items-center justify-center"
-                  >
-                    <div className="text-white/20 animate-pulse">
-                      <Activity size={120} />
-                    </div>
-                    {/* In a real app, a <video> or <img> element would go here */}
-                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
-                      <p className="text-white text-xs font-medium flex items-center gap-2">
-                        <ShieldCheck size={14} className="text-green-400" />
-                        Secure Local Processing
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            <div className="p-6 bg-white mt-auto flex gap-4">
-              <button
-                onClick={() => setIsCameraActive(true)}
-                disabled={isCameraActive}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
-                  isCameraActive 
-                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-                    : 'bg-primary text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100'
-                }`}
-              >
-                <Video size={20} />
-                Start Camera
-              </button>
-              <button
-                onClick={() => setIsCameraActive(false)}
-                disabled={!isCameraActive}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
-                  !isCameraActive 
-                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <VideoOff size={20} />
-                Stop
-              </button>
-            </div>
-          </motion.div>
+          {/* Left: Webcam Viewer component */}
+          <WebcamViewer onStreamChange={setIsCameraActive} />
 
           {/* Right: Emotion Panel */}
           <motion.div
