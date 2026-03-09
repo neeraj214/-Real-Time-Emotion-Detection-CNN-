@@ -1,22 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-primary: #4F46E5;
+  --color-background: #F8FAFC;
+  --color-card: #FFFFFF;
+  --font-family-sans: 'Inter', sans-serif;
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
 
 @layer base {
   body {
-    @apply bg-background text-slate-900 font-sans antialiased;
+    background-color: #F8FAFC;
+    color: #0f172a;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white border border-slate-200/60 shadow-soft rounded-2xl;
+    background-color: white;
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 1rem;
   }
-  
+
   .btn-primary {
-    @apply bg-primary text-white px-6 py-2.5 rounded-xl font-medium transition-all hover:bg-indigo-700 active:scale-95 shadow-sm;
+    background-color: #4F46E5;
+    color: white;
+    padding: 0.625rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 150ms ease;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-primary:hover {
+    background-color: #4338CA;
+  }
+
+  .btn-primary:active {
+    transform: scale(0.95);
   }
 
   .mirror {
