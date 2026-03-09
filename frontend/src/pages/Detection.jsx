@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Smile, BarChart3 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Activity } from 'lucide-react';
 import WebcamViewer from '../components/WebcamViewer';
+import EmotionPanel from '../components/EmotionPanel';
 
 const Detection = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -44,58 +45,10 @@ const Detection = () => {
           {/* Left: Webcam Viewer component */}
           <WebcamViewer onStreamChange={setIsCameraActive} />
 
-          {/* Right: Emotion Panel */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col gap-6"
-          >
-            {/* Main Emotion Display */}
-            <div className="glass-card p-8 bg-white flex-1">
-              <div className="flex items-center gap-2 mb-8 text-slate-500 font-bold text-xs uppercase tracking-widest">
-                <BarChart3 size={16} />
-                Emotion Analytics
-              </div>
-
-              <div className="flex flex-col items-center justify-center py-10">
-                <motion.div 
-                  key={currentEmotion.label}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 200 }}
-                  className="text-8xl mb-6"
-                >
-                  {currentEmotion.emoji}
-                </motion.div>
-                
-                <motion.h2 
-                  key={`${currentEmotion.label}-text`}
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="text-4xl font-black text-slate-900 mb-2"
-                >
-                  {currentEmotion.label}
-                </motion.h2>
-
-                <div className="w-full max-w-xs mt-8">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-sm font-bold text-slate-500 uppercase">Confidence</span>
-                    <span className="text-sm font-black text-primary">{currentEmotion.confidence}%</span>
-                  </div>
-                  <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                    <motion.div 
-                      key={currentEmotion.confidence}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${currentEmotion.confidence}%` }}
-                      transition={{ duration: 0.8, ease: "easeOut" }}
-                      className={`h-full ${currentEmotion.color} rounded-full`}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
+          {/* Right: Emotion Panel component */}
+          <div className="flex flex-col gap-6">
+            <EmotionPanel emotion={currentEmotion} />
+            
             {/* Hint/Status Card */}
             <div className="glass-card p-6 bg-indigo-600 text-white flex items-center gap-4">
               <div className="bg-white/20 p-3 rounded-xl">
@@ -106,7 +59,7 @@ const Detection = () => {
                 <p className="font-medium">Model loaded and ready for inference</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>
