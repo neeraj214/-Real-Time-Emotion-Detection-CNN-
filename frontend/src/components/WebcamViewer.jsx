@@ -2,47 +2,146 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Video, VideoOff, ShieldCheck } from 'lucide-react';
 
-const WebcamViewer = ({ onStreamChange }) => {
+const WebcamViewer = ({ onStreamChange, onEmotionResults }) => {
   const [stream, setStream] = useState(null);
   const [isActive, setIsActive] = useState(false);
+  const videoRef = useRef(null);
+  const wsRef = useRef(null);
+  const canvasRef = useRef(null);
+  const requestRef = useRef(null);
 
   // Use a callback ref to ensure we set srcObject as soon as the element mounts
-  const videoRef = (node) => {
+  const setVideoRef = (node) => {
+    videoRef.current = node;
     if (node && stream) {
       node.srcObject = stream;
     }
   };
 
+  // Initialize canvas for frame capturing
+  useEffect(() => {
+    canvasRef.current = document.createElement('canvas');
+  }, []);
+
   const startCamera = async () => {
     try {
       const newStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 1280, height: 720, facingMode: "user" } 
+        video: { width: 640, height: 480, facingMode: "user" }
       });
       setStream(newStream);
       setIsActive(true);
       if (onStreamChange) onStreamChange(true);
+      
+      // Initialize WebSocket
+      connectWebSocket();
     } catch (err) {
       console.error("Error accessing webcam:", err);
       alert("Could not access camera. Please check permissions.");
     }
   };
 
+  const connectWebSocket = () => {
+    // Force localhost:8000 for now to avoid hostname issues
+    const wsUrl = `ws://localhost:8000/ws/detect`;
+    console.log("Connecting to WebSocket:", wsUrl);
+    
+    wsRef.current = new WebSocket(wsUrl);
+    
+    wsRef.current.onopen = () => {
+      console.log("WebSocket connected successfully");
+      startInferenceLoop();
+    };
+    
+    wsRef.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (onEmotionResults && data.predictions) {
+          onEmotionResults(data.predictions);
+        }
+      } catch (e) {
+        console.error("Error parsing WebSocket message:", e);
+      }
+    };
+    
+    wsRef.current.onclose = (event) => {
+      console.log("WebSocket connection closed:", event.code, event.reason);
+      stopInferenceLoop();
+    };
+    
+    wsRef.current.onerror = (err) => {
+      console.error("WebSocket error details:", err);
+    };
+  };
+
+  const isActiveRef = useRef(false);
+
+  useEffect(() => {
+    isActiveRef.current = isActive;
+  }, [isActive]);
+
+  const startInferenceLoop = () => {
+    console.log("DEBUG: Starting inference loop");
+    if (requestRef.current) clearInterval(requestRef.current);
+    
+    requestRef.current = setInterval(() => {
+      const currentIsActive = isActiveRef.current;
+      const wsOpen = wsRef.current && wsRef.current.readyState === WebSocket.OPEN;
+      
+      if (!currentIsActive || !videoRef.current || !wsOpen) {
+        return;
+      }
+
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      
+      if (video.videoWidth > 0 && video.videoHeight > 0) {
+        // Capture frame at optimized resolution for model inference
+        canvas.width = 320; 
+        canvas.height = 240;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        try {
+          const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+          wsRef.current.send(JSON.stringify({ image: base64Image }));
+        } catch (err) {
+          console.error("Failed to send frame:", err);
+        }
+      }
+    }, 200);
+  };
+
+  const stopInferenceLoop = () => {
+    console.log("DEBUG: Stopping inference loop");
+    if (requestRef.current) {
+      clearInterval(requestRef.current);
+      requestRef.current = null;
+    }
+  };
+
   const stopCamera = () => {
+    stopInferenceLoop();
+    
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
     }
+    
     setIsActive(false);
     if (onStreamChange) onStreamChange(false);
   };
 
   useEffect(() => {
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
+      stopCamera();
     };
-  }, [stream]);
+  }, []);
 
   return (
     <motion.div
@@ -86,7 +185,7 @@ const WebcamViewer = ({ onStreamChange }) => {
               className="w-full h-full relative"
             >
               <video
-                ref={videoRef}
+                ref={setVideoRef}
                 autoPlay
                 playsInline
                 muted

@@ -13,6 +13,9 @@ pillow>=9.3.0
 mediapipe>=0.9.0
 tqdm>=4.64.0
 h5py>=3.7.0
+fastapi>=0.110.0
+uvicorn>=0.27.0
+python-multipart>=0.0.9
 
 # Optional: For model conversion
 # tf2onnx>=1.13.0
