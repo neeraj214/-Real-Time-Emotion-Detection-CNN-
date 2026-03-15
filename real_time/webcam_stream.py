@@ -66,6 +66,14 @@ class WebcamStream:
         if config.USE_THREADING:
             self.thread = threading.Thread(target=self._update, daemon=True)
             self.thread.start()
+            # Wait until the background thread captures at least one valid frame
+            import time
+            timeout = 5.0  # seconds
+            t0 = time.time()
+            while not self.grabbed and (time.time() - t0) < timeout:
+                time.sleep(0.03)
+            if not self.grabbed:
+                raise RuntimeError("Webcam did not produce a frame within timeout")
             print("Threaded webcam capture started")
         else:
             print("Non-threaded webcam capture mode")
@@ -78,7 +86,8 @@ class WebcamStream:
             self.grabbed, self.frame = self.cap.read()
             
             if not self.grabbed:
-                self.stop()
+                # Don't call self.stop() here (would join this thread from itself)
+                self.stopped = True
                 break
     
     def read(self):

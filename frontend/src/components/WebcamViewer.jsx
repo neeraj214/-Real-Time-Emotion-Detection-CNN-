@@ -3,9 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Video, VideoOff, ShieldCheck } from 'lucide-react';
 
 const WebcamViewer = ({ onStreamChange }) => {
-  const videoRef = useRef(null);
   const [stream, setStream] = useState(null);
   const [isActive, setIsActive] = useState(false);
+
+  // Use a callback ref to ensure we set srcObject as soon as the element mounts
+  const videoRef = (node) => {
+    if (node && stream) {
+      node.srcObject = stream;
+    }
+  };
 
   const startCamera = async () => {
     try {
@@ -29,12 +35,6 @@ const WebcamViewer = ({ onStreamChange }) => {
     setIsActive(false);
     if (onStreamChange) onStreamChange(false);
   };
-
-  useEffect(() => {
-    if (isActive && videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [isActive, stream]);
 
   useEffect(() => {
     return () => {
