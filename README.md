@@ -307,10 +307,10 @@ Modify `config/config.py` to experiment with:
 
 ## 📝 Future Improvements
 
+- [x] Web interface (React + FastAPI)
 - [ ] Multi-face tracking with ID assignment
 - [ ] Emotion history and temporal smoothing
 - [ ] Mobile app deployment (TFLite)
-- [ ] Web interface (TensorFlow.js)
 - [ ] Additional datasets (RAF-DB, AffectNet)
 - [ ] Ensemble models for better accuracy
 - [ ] Real-time emotion analytics dashboard
