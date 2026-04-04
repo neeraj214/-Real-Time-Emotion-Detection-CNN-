@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
 import WebcamViewer from '../components/WebcamViewer';
 import EmotionPanel from '../components/EmotionPanel';
+import { useEmotionHistory } from '../hooks/useEmotionHistory';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
 
 const EMOTION_MAP = {
   'Angry': { emoji: '😠', color: 'bg-red-500' },
@@ -16,29 +18,32 @@ const EMOTION_MAP = {
 
 const Detection = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
-  const [currentEmotion, setCurrentEmotion] = useState({ 
-    label: 'Waiting...', 
-    confidence: 0, 
-    emoji: '📷', 
-    color: 'bg-slate-300' 
-  });
+  const { addPrediction, history, smoothedDistribution, currentSmoothedEmotion } = useEmotionHistory();
 
   const handleEmotionResults = useCallback((predictions) => {
-    if (predictions && predictions.length > 0) {
-      // Pick the face with highest confidence or just the first one
-      const topPred = predictions[0];
-      const { emotion, confidence } = topPred;
-      
-      const mapInfo = EMOTION_MAP[emotion] || { emoji: '❓', color: 'bg-slate-400' };
-      
-      setCurrentEmotion({
-        label: emotion,
-        confidence: Math.round(confidence * 100),
-        emoji: mapInfo.emoji,
-        color: mapInfo.color
-      });
+    addPrediction(predictions);
+  }, [addPrediction]);
+
+  const displayEmotion = useMemo(() => {
+    if (!currentSmoothedEmotion) {
+      return { 
+        label: 'Waiting...', 
+        confidence: 0, 
+        emoji: '📷', 
+        color: 'bg-slate-300' 
+      };
     }
-  }, []);
+    
+    const { emotion, confidence } = currentSmoothedEmotion;
+    const mapInfo = EMOTION_MAP[emotion] || { emoji: '❓', color: 'bg-slate-400' };
+    
+    return {
+      label: emotion,
+      confidence: Math.round(confidence * 100),
+      emoji: mapInfo.emoji,
+      color: mapInfo.color
+    };
+  }, [currentSmoothedEmotion]);
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-slate-50 p-6 md:p-12">
@@ -54,27 +59,35 @@ const Detection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Left: Webcam Viewer component */}
-          <WebcamViewer 
-            onStreamChange={setIsCameraActive} 
-            onEmotionResults={handleEmotionResults}
-          />
+          <div>
+            <WebcamViewer 
+              onStreamChange={setIsCameraActive} 
+              onEmotionResults={handleEmotionResults}
+            />
+          </div>
 
-          {/* Right: Emotion Panel component */}
+          {/* Right: Emotion Panel component and Dashboard */}
           <div className="flex flex-col gap-6">
-            <EmotionPanel emotion={currentEmotion} />
+            <EmotionPanel emotion={displayEmotion} />
             
             {/* Hint/Status Card */}
-            <div className="glass-card p-6 bg-indigo-600 text-white flex items-center gap-4">
+            <div className="glass-card p-6 bg-indigo-600 text-white flex items-center gap-4 rounded-2xl shadow-sm">
               <div className="bg-white/20 p-3 rounded-xl">
                 <Activity size={24} />
               </div>
               <div>
                 <p className="text-sm font-bold opacity-80 uppercase tracking-tighter">System Status</p>
                 <p className="font-medium">
-                  {isCameraActive ? 'Processing live frames' : 'Model loaded and ready for inference'}
+                  {isCameraActive ? 'Processing live frames...' : 'Model loaded and ready for inference'}
                 </p>
               </div>
             </div>
+
+            {/* Real-Time Analytics Dashboard */}
+            <AnalyticsDashboard 
+              history={history} 
+              smoothedDistribution={smoothedDistribution} 
+            />
           </div>
         </div>
       </div>
