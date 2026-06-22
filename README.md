@@ -333,3 +333,11 @@ For questions or suggestions, please open an issue on GitHub.
 ---
 
 **Built with ❤️ for real-time emotion recognition**
+
+---
+
+## 🚫 Why This Project Is Not Deployed Online
+
+- **Local Hardware/Webcam Dependencies**: The system relies on local webcam capture using OpenCV to classify human emotions in real-time.
+- **Model Size and CPU/GPU Latency**: Running live deep learning CNN inference (~15MB model) is optimized for local environments and would suffer from network latency if hosted on basic free cloud servers.
+
